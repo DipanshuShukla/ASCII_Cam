@@ -2,7 +2,7 @@ from ctypes import resize
 import cv2
 import numpy as np
 
-charScale ='Ñ@#W$9876543210?!abc;:+=-,._                 '[::-1]
+charScale ='NÑ@#W$9876543210?!abc;:+=-,._                 '[::-1]
 charScale1 = " .:-=+*#%@"
 
 class ASCII_Cam:
@@ -23,7 +23,16 @@ class ASCII_Cam:
 
         mapToChar = lambda x : self.charScale[(x*len(self.charScale)//256)]
         vmapToChar = np.vectorize(mapToChar)
-        return vmapToChar(img)
+        return self.PrintableToTerminal(vmapToChar(img))
+
+    def PrintableToTerminal(self, charImg):
+        result = []
+        for i in charImg:
+            for j in i:
+                result.append(j)
+            result.append("\n")
+
+        return "".join(result)
 
 
 
@@ -37,12 +46,5 @@ if __name__ == "__main__":
 
     img = obj.ImgToASCII(img)
 
-    print(img.shape)
-
-    for i in img:
-        for j in i:
-            print(j, end="")
-        print()
-
-    cv2.destroyAllWindows()
+    print(img)
 
